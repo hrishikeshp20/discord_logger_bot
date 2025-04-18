@@ -57,7 +57,7 @@ async def on_member_join(member):
 
     # Send data to your Django backend
     async with aiohttp.ClientSession() as session:
-        async with session.post("http://127.0.0.1:8000/api/sync-user/", json=payload) as response:
+        async with session.post("https://discord-bot-logger-backend.onrender.com/api/sync-user/", json=payload) as response:
             if response.status == 200:
                 print(f"✅ Synced {member.name} to backend.")
             else:
@@ -74,7 +74,7 @@ async def on_member_remove(member):
 
     # Send data to your Django backend
     async with aiohttp.ClientSession() as session:
-        async with session.post("http://127.0.0.1:8000/api/sync-user/", json=payload) as response:
+        async with session.post("https://discord-bot-logger-backend.onrender.com/api/sync-user/", json=payload) as response:
             if response.status == 200:
                 print(f"✅ Synced {member.name} to backend.")
             else:
@@ -123,7 +123,7 @@ async def list_members(ctx):
 
 
             async with aiohttp.ClientSession() as session:
-                async with session.post("http://127.0.0.1:8000/api/bulk-sync/", json=payload) as response:
+                async with session.post("https://discord-bot-logger-backend.onrender.com/api/bulk-sync/", json=payload) as response:
                     if response.status == 200:
                         await ctx.send("✅ All members synced to backend.")
                     else:
