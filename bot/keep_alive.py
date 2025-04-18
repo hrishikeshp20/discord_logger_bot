@@ -4,7 +4,7 @@ import requests
 
 app = Flask('')
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def home():
     return "Bot is running!"
 
