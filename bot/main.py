@@ -139,8 +139,8 @@ async def list_members(ctx):
 async def help_command(ctx):
     commands_list = [
         "`!hello_angela` - Say hello to Angela ",
-        "`!angela_find_user <user_id>` - Search for a user by their Discord ID 🔍",
-        "`!list_members` - Sync and list all human members in the server 👥",
+        "`!angela_find_user <user_id>` - Search for a user by their Discord ID ",
+        "`!list_members` - Sync and list all human members in the server",
         "`!help_angela` - Display this help message "
     ]
     
