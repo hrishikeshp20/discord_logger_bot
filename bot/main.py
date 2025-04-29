@@ -76,9 +76,9 @@ async def on_member_remove(member):
     async with aiohttp.ClientSession() as session:
         async with session.post("https://discord-bot-logger-backend.onrender.com/api/sync-user/", json=payload) as response:
             if response.status == 200:
-                print(f"✅ Synced {member.name} to backend.")
+                print(f"Synced {member.name} to backend.")
             else:
-                print(f"❌ Failed to sync {member.name}, status code: {response.status}")
+                print(f"Failed to sync {member.name}, status code: {response.status}")
         
 
 @bot.command(name="list_members")
