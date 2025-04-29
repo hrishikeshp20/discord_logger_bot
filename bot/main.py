@@ -9,7 +9,7 @@ import asyncio
 import aiohttp
 from keep_alive import keep_alive
 
-# Load environment variables
+
 load_dotenv()
 TOKEN = os.getenv("DISCORD_BOT_TOKEN")
 keep_alive()
@@ -35,20 +35,20 @@ async def find_user(ctx, user_id: int):
     user = ctx.guild.get_member(user_id)
 
     if user:
-        await ctx.send(f"✅ Found user: {user.mention}, {user.name} (ID: {user.id})")
+        await ctx.send(f"Found user: {user.mention}, {user.name} (ID: {user.id})")
     else:
-        await ctx.send("❌ No user found with that ID in this server.")
+        await ctx.send("No user found with that ID in this server.")
 
 
 
 @bot.event
 async def on_member_join(member):
-    # Send welcome message in channel
+    # Sends welcome message in channel
     '''channel = discord.utils.get(member.guild.text_channels, name="bot-test")
     if channel:
-        await channel.send(f"👋 {member.mention} has joined the server!")'''
+        await channel.send(f"{member.mention} has joined the server!")'''
 
-    # Prepare data payload
+    # Prepares data payload
     payload = {
         "user_id": str(member.id),
         "user_name": f"{member.name}",
@@ -59,9 +59,9 @@ async def on_member_join(member):
     async with aiohttp.ClientSession() as session:
         async with session.post("https://discord-bot-logger-backend.onrender.com/api/sync-user/", json=payload) as response:
             if response.status == 200:
-                print(f"✅ Synced {member.name} to backend.")
+                print(f"Synced {member.name} to backend.")
             else:
-                print(f"❌ Failed to sync {member.name}, status code: {response.status}")
+                print(f"Failed to sync {member.name}, status code: {response.status}")
 
 @bot.event
 async def on_member_remove(member):
@@ -72,7 +72,7 @@ async def on_member_remove(member):
         "status": False  # True means user is in the server
     }
 
-    # Send data to your Django backend
+    # Send data to Django backend
     async with aiohttp.ClientSession() as session:
         async with session.post("https://discord-bot-logger-backend.onrender.com/api/sync-user/", json=payload) as response:
             if response.status == 200:
@@ -83,10 +83,10 @@ async def on_member_remove(member):
 
 @bot.command(name="list_members")
 async def list_members(ctx):
-    allowed_user_id = 340840136264777728 # Replace with your user ID
+    allowed_user_id = 340840136264777728 # Replace with user ID
 
     if ctx.author.id != allowed_user_id:
-        await ctx.send("❌ You are not authorized to use this command.")
+        await ctx.send("You are not authorized to use this command.")
         return
 
     # Ask for confirmation
@@ -125,26 +125,26 @@ async def list_members(ctx):
             async with aiohttp.ClientSession() as session:
                 async with session.post("https://discord-bot-logger-backend.onrender.com/api/bulk-sync/", json=payload) as response:
                     if response.status == 200:
-                        await ctx.send("✅ All members synced to backend.")
+                        await ctx.send("All members synced to backend.")
                     else:
-                        await ctx.send(f"❌ Sync failed. Status code: {response.status}")
+                        await ctx.send(f"Sync failed. Status code: {response.status}")
 
         else:
-            await ctx.send("❌ Command canceled.")
+            await ctx.send("Command canceled.")
 
     except asyncio.TimeoutError:
-        await ctx.send("⌛ Confirmation timed out. Command canceled.")
+        await ctx.send("Confirmation timed out. Command canceled.")
 
 @bot.command(name="help_angela")
 async def help_command(ctx):
     commands_list = [
-        "`!hello_angela` - Say hello to Angela 🤖",
+        "`!hello_angela` - Say hello to Angela ",
         "`!angela_find_user <user_id>` - Search for a user by their Discord ID 🔍",
         "`!list_members` - Sync and list all human members in the server 👥",
-        "`!help_angela` - Display this help message 🆘"
+        "`!help_angela` - Display this help message "
     ]
     
-    help_text = "**📜 Angela's Command List:**\n" + "\n".join(commands_list)
+    help_text = "** Angela's Command List:**\n" + "\n".join(commands_list)
     await ctx.send(help_text)
 
 
