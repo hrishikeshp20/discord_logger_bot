@@ -39,6 +39,67 @@ async def find_user(ctx, user_id: int):
     else:
         await ctx.send("No user found with that ID in this server.")
 
+@bot.command(name="reaction_list")
+async def reaction_list(ctx, message_link: str):
+    try:
+        # Parse message link
+        parts = message_link.split("/")
+        if len(parts) < 7:
+            return await ctx.send("Invalid message link format.")
+
+        guild_id = int(parts[4])
+        channel_id = int(parts[5])
+        message_id = int(parts[6])
+
+        # Fetch channel and message
+        channel = bot.get_channel(channel_id)
+        if channel is None:
+            channel = await bot.fetch_channel(channel_id)
+
+        message = await channel.fetch_message(message_id)
+
+        # Prepare lists
+        filtered_users = []
+        excluded_users = []
+
+        for reaction in message.reactions:
+            if str(reaction.emoji) == "✅":
+                async for user in reaction.users():
+                    # Ignore bots
+                    if user.bot:
+                        continue
+                    # Get member from guild
+                    member = ctx.guild.get_member(user.id)
+                    # Filter based on permission
+                    if member and member.guild_permissions.mute_members:
+                        excluded_users.append(user.name)
+                    else:
+                        filtered_users.append(user.name)
+
+        if not filtered_users:
+            return await ctx.send("No eligible users found who reacted with ✅.")
+
+        # Create text file
+        output = io.StringIO()
+        for name in filtered_users:
+            output.write(f"{name}\n")
+        output.seek(0)
+
+        # Send count and excluded names
+        await ctx.send(f"✅ Member count (excluding users with mute permission): **{len(filtered_users)}**")
+
+        if excluded_users:
+            excluded_list = "\n".join(excluded_users)
+            await ctx.send(f"🛑 Excluded members (have mute permissions):\n```{excluded_list}```")
+        else:
+            await ctx.send("✅ No members were excluded due to mute permissions.")
+
+        # Send file
+        await ctx.send(file=discord.File(fp=output, filename="reaction_list.txt"))
+
+    except Exception as e:
+        await ctx.send(f"An error occurred: {str(e)}")
+
 
 
 @bot.event
